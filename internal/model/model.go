@@ -1,7 +1,13 @@
 package model
 
 type Entity struct {
+	Name       string      `json:"name"`
+	Attributes []Attribute `json:"attributes"`
+}
+
+type Attribute struct {
 	Name string `json:"name"`
+	Type string `json:"type"`
 }
 
 type Relation struct {
