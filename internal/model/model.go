@@ -19,4 +19,5 @@ type Relation struct {
 type AnalyzeResponse struct {
 	Entities  []Entity   `json:"entities"`
 	Relations []Relation `json:"relations"`
+	SQL       string     `json:"sql"`
 }
