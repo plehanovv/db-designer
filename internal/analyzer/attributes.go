@@ -1,6 +1,9 @@
 package analyzer
 
-import "db-designer-vkr/internal/model"
+import (
+	"db-designer-vkr/internal/knowledge"
+	"db-designer-vkr/internal/model"
+)
 
 func ExtractAttributes(
 	words []string,
@@ -9,11 +12,13 @@ func ExtractAttributes(
 
 	for i := 0; i < len(words)-2; i++ {
 
-		first := clean(words[i])
-		second := clean(words[i+1])
-		third := clean(words[i+2])
+		first := words[i]
+		second := words[i+1]
+		third := words[i+2]
 
-		if isEntity(first) && second == "has" && !isEntity(third) {
+		if knowledge.Dictionary[first] == knowledge.EntityType &&
+			second == "has" &&
+			knowledge.Dictionary[third] == knowledge.AttributeType {
 
 			entity := entityMap[first]
 
@@ -21,7 +26,7 @@ func ExtractAttributes(
 				entity.Attributes,
 				model.Attribute{
 					Name: third,
-					Type: "TEXT",
+					Type: detectAttributeType(third),
 				},
 			)
 		}

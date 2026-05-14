@@ -1,16 +1,15 @@
 package service
 
 import (
-	"strings"
-
 	"db-designer-vkr/internal/analyzer"
 	"db-designer-vkr/internal/generator"
 	"db-designer-vkr/internal/model"
+	"db-designer-vkr/internal/preprocessor"
 )
 
 func AnalyzeText(text string) model.AnalyzeResponse {
 
-	words := strings.Fields(text)
+	words := preprocessor.Process(text)
 
 	entitiesMap := analyzer.ExtractEntities(words)
 

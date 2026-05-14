@@ -1,18 +1,21 @@
 package analyzer
 
-import "db-designer-vkr/internal/model"
+import (
+	"db-designer-vkr/internal/knowledge"
+	"db-designer-vkr/internal/model"
+)
 
 func ExtractRelations(words []string) []model.Relation {
-
 	var relations []model.Relation
 
 	for i := 0; i < len(words)-2; i++ {
+		first := words[i]
+		second := words[i+1]
+		third := words[i+2]
 
-		first := clean(words[i])
-		second := clean(words[i+1])
-		third := clean(words[i+2])
-
-		if isEntity(first) && isVerb(second) && isEntity(third) {
+		if knowledge.Dictionary[first] == knowledge.EntityType &&
+			knowledge.Dictionary[second] == knowledge.VerbType &&
+			knowledge.Dictionary[third] == knowledge.EntityType {
 
 			relations = append(relations, model.Relation{
 				From: first,
@@ -23,25 +26,4 @@ func ExtractRelations(words []string) []model.Relation {
 	}
 
 	return relations
-}
-
-func isVerb(word string) bool {
-
-	verbs := []string{
-		"enrolls",
-		"teaches",
-		"belongs",
-		"uses",
-		"manages",
-		"creates",
-	}
-
-	for _, v := range verbs {
-
-		if word == v {
-			return true
-		}
-	}
-
-	return false
 }
