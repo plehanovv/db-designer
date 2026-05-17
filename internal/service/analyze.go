@@ -4,18 +4,18 @@ import (
 	"db-designer-vkr/internal/analyzer"
 	"db-designer-vkr/internal/generator"
 	"db-designer-vkr/internal/model"
-	"db-designer-vkr/internal/preprocessor"
+	"db-designer-vkr/internal/nlp"
 )
 
 func AnalyzeText(text string) model.AnalyzeResponse {
 
-	words := preprocessor.Process(text)
+	document := nlp.ProcessText(text)
 
-	entitiesMap := analyzer.ExtractEntities(words)
+	entitiesMap := analyzer.ExtractEntities(document)
 
-	analyzer.ExtractAttributes(words, entitiesMap)
+	analyzer.ExtractAttributes(document, entitiesMap)
 
-	relations := analyzer.ExtractRelations(words)
+	relations := analyzer.ExtractRelations(document)
 
 	var entities []model.Entity
 
@@ -23,7 +23,7 @@ func AnalyzeText(text string) model.AnalyzeResponse {
 		entities = append(entities, *entity)
 	}
 
-	sql := generator.GenerateSQL(entities)
+	sql := generator.GenerateSQL(entities, relations)
 
 	return model.AnalyzeResponse{
 		Entities:  entities,
