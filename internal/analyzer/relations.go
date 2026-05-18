@@ -1,29 +1,47 @@
 package analyzer
 
 import (
-	"db-designer-vkr/internal/knowledge"
 	"db-designer-vkr/internal/model"
+	"db-designer-vkr/internal/nlp"
 )
 
-func ExtractRelations(words []string) []model.Relation {
+func ExtractRelations(document nlp.Document) []model.Relation {
+
 	var relations []model.Relation
 
-	for i := 0; i < len(words)-2; i++ {
-		first := words[i]
-		second := words[i+1]
-		third := words[i+2]
+	tokens := document.Tokens
 
-		if knowledge.Dictionary[first] == knowledge.EntityType &&
-			knowledge.Dictionary[second] == knowledge.VerbType &&
-			knowledge.Dictionary[third] == knowledge.EntityType {
+	for i := 0; i < len(tokens)-2; i++ {
+
+		first := tokens[i]
+		second := tokens[i+1]
+		third := tokens[i+2]
+
+		if isEntity(first) &&
+			isRelationVerb(second.Lemma) &&
+			isEntity(third) {
 
 			relations = append(relations, model.Relation{
-				From: first,
-				To:   third,
-				Type: second,
+				From: normalizeEntity(first.Lemma),
+				To:   normalizeEntity(third.Lemma),
+				Type: second.Lemma,
 			})
 		}
 	}
 
 	return relations
+}
+
+func isRelationVerb(value string) bool {
+
+	verbs := map[string]bool{
+		"have":    true,
+		"contain": true,
+		"include": true,
+		"belong":  true,
+		"connect": true,
+		"store":   true,
+	}
+
+	return verbs[value]
 }

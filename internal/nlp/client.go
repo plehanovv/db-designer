@@ -18,11 +18,7 @@ type Token struct {
 	Head       string `json:"head"`
 }
 
-type AnalyzeResponse struct {
-	Tokens []Token `json:"tokens"`
-}
-
-func AnalyzeText(text string) (*AnalyzeResponse, error) {
+func ProcessText(text string) Document {
 
 	requestBody := AnalyzeRequest{
 		Text: text,
@@ -30,7 +26,7 @@ func AnalyzeText(text string) (*AnalyzeResponse, error) {
 
 	jsonData, err := json.Marshal(requestBody)
 	if err != nil {
-		return nil, err
+		return Document{}
 	}
 
 	response, err := http.Post(
@@ -40,17 +36,17 @@ func AnalyzeText(text string) (*AnalyzeResponse, error) {
 	)
 
 	if err != nil {
-		return nil, err
+		return Document{}
 	}
 
 	defer response.Body.Close()
 
-	var result AnalyzeResponse
+	var document Document
 
-	err = json.NewDecoder(response.Body).Decode(&result)
+	err = json.NewDecoder(response.Body).Decode(&document)
 	if err != nil {
-		return nil, err
+		return Document{}
 	}
 
-	return &result, nil
+	return document
 }

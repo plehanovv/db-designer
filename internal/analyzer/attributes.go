@@ -1,32 +1,39 @@
 package analyzer
 
 import (
-	"db-designer-vkr/internal/knowledge"
 	"db-designer-vkr/internal/model"
+	"db-designer-vkr/internal/nlp"
 )
 
 func ExtractAttributes(
-	words []string,
+	document nlp.Document,
 	entityMap map[string]*model.Entity,
 ) {
 
-	for i := 0; i < len(words)-2; i++ {
+	tokens := document.Tokens
 
-		first := words[i]
-		second := words[i+1]
-		third := words[i+2]
+	for i := 0; i < len(tokens)-2; i++ {
 
-		if knowledge.Dictionary[first] == knowledge.EntityType &&
-			second == "has" &&
-			knowledge.Dictionary[third] == knowledge.AttributeType {
+		first := tokens[i]
+		second := tokens[i+1]
+		third := tokens[i+2]
 
-			entity := entityMap[first]
+		if isEntity(first) &&
+			second.Lemma == "have" {
+
+			entityName := normalizeEntity(first.Lemma)
+
+			entity := entityMap[entityName]
+
+			if entity == nil {
+				continue
+			}
 
 			entity.Attributes = append(
 				entity.Attributes,
 				model.Attribute{
-					Name: third,
-					Type: detectAttributeType(third),
+					Name: third.Lemma,
+					Type: detectAttributeType(third.Lemma),
 				},
 			)
 		}

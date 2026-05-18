@@ -1,15 +1,21 @@
 package generator
 
 import (
-	"db-designer-vkr/internal/model"
 	"fmt"
 	"strings"
+
+	"db-designer-vkr/internal/model"
 )
 
-func GenerateSQL(entities []model.Entity) string {
+func GenerateSQL(
+	entities []model.Entity,
+	relations []model.Relation,
+) string {
+
 	var builder strings.Builder
 
 	for _, entity := range entities {
+
 		tableName := strings.ToLower(entity.Name)
 
 		builder.WriteString(
@@ -21,14 +27,30 @@ func GenerateSQL(entities []model.Entity) string {
 
 		builder.WriteString("    id SERIAL PRIMARY KEY")
 
-		// атрибуты
+		// attributes
 		for _, attr := range entity.Attributes {
+
 			builder.WriteString(
 				fmt.Sprintf(
-					",\n    %s TEXT",
-					attr.Name,
+					",\n    %s %s",
+					strings.ToLower(attr.Name),
+					attr.Type,
 				),
 			)
+		}
+
+		// relations -> foreign keys
+		for _, relation := range relations {
+
+			if relation.From == entity.Name {
+
+				builder.WriteString(
+					fmt.Sprintf(
+						",\n    %s_id INTEGER",
+						strings.ToLower(relation.To),
+					),
+				)
+			}
 		}
 
 		builder.WriteString("\n);\n\n")

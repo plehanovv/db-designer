@@ -1,18 +1,26 @@
 package analyzer
 
 import (
-	"db-designer-vkr/internal/knowledge"
+	"strings"
+
 	"db-designer-vkr/internal/model"
+	"db-designer-vkr/internal/nlp"
 )
 
-func ExtractEntities(words []string) map[string]*model.Entity {
+func ExtractEntities(document nlp.Document) map[string]*model.Entity {
+
 	entityMap := make(map[string]*model.Entity)
 
-	for _, word := range words {
-		if knowledge.Dictionary[word] == knowledge.EntityType {
-			if _, exists := entityMap[word]; !exists {
-				entityMap[word] = &model.Entity{
-					Name:       word,
+	for _, token := range document.Tokens {
+
+		if isEntity(token) {
+
+			entityName := normalizeEntity(token.Lemma)
+
+			if _, exists := entityMap[entityName]; !exists {
+
+				entityMap[entityName] = &model.Entity{
+					Name:       entityName,
 					Attributes: []model.Attribute{},
 				}
 			}
@@ -20,4 +28,27 @@ func ExtractEntities(words []string) map[string]*model.Entity {
 	}
 
 	return entityMap
+}
+
+func isEntity(token nlp.Token) bool {
+
+	entityTags := map[string]bool{
+		"NOUN":  true,
+		"PROPN": true,
+	}
+
+	return entityTags[token.Pos]
+}
+
+func normalizeEntity(value string) string {
+
+	value = strings.TrimSpace(value)
+
+	if value == "" {
+		return value
+	}
+
+	first := strings.ToUpper(string(value[0]))
+
+	return first + value[1:]
 }
