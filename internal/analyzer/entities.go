@@ -1,8 +1,6 @@
 package analyzer
 
 import (
-	"strings"
-
 	"db-designer-vkr/internal/model"
 	"db-designer-vkr/internal/nlp"
 )
@@ -31,6 +29,10 @@ func ExtractEntities(document nlp.Document) map[string]*model.Entity {
 }
 
 func isEntity(token nlp.Token) bool {
+	lemma := normalizeWord(token.Lemma)
+	if len([]rune(lemma)) < 3 || isIgnoredEntity(lemma) {
+		return false
+	}
 
 	entityTags := map[string]bool{
 		"NOUN":  true,
@@ -38,17 +40,4 @@ func isEntity(token nlp.Token) bool {
 	}
 
 	return entityTags[token.Pos]
-}
-
-func normalizeEntity(value string) string {
-
-	value = strings.TrimSpace(value)
-
-	if value == "" {
-		return value
-	}
-
-	first := strings.ToUpper(string(value[0]))
-
-	return first + value[1:]
 }

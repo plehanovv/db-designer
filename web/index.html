@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DB Designer VKR</title>
+    <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+<main class="layout">
+    <section class="panel input-panel">
+        <div class="toolbar">
+            <h1>Database Structure Designer</h1>
+            <button id="analyzeButton" type="button">Analyze</button>
+        </div>
+        <textarea id="domainText" spellcheck="true">Customer has name email phone. Order has number date amount. Order belongs customer.</textarea>
+        <p id="status" class="status">Enter a domain description in Russian or English.</p>
+    </section>
+
+    <section class="workspace">
+        <section class="panel diagram-panel">
+            <div class="section-title">ER model</div>
+            <svg id="diagram" role="img" aria-label="ER diagram"></svg>
+        </section>
+
+        <section class="panel">
+            <div class="section-title">Entities and relations</div>
+            <div id="entities" class="entities"></div>
+        </section>
+
+        <section class="panel sql-panel">
+            <div class="section-title">SQL DDL</div>
+            <pre id="sql"></pre>
+        </section>
+    </section>
+</main>
+<script src="/app.js"></script>
+</body>
+</html>

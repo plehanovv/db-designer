@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"sort"
 	"strings"
 
 	"db-designer-vkr/internal/analyzer"
@@ -29,6 +30,10 @@ func AnalyzeText(text string) (model.AnalyzeResponse, error) {
 	for _, entity := range entitiesMap {
 		entities = append(entities, *entity)
 	}
+
+	sort.Slice(entities, func(i, j int) bool {
+		return entities[i].Name < entities[j].Name
+	})
 
 	sql := generator.GenerateSQL(entities, relations)
 

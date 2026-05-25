@@ -1,0 +1,169 @@
+:root {
+    color-scheme: light;
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
+    background: #f5f7fb;
+    color: #1b2430;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+}
+
+.layout {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: minmax(320px, 420px) 1fr;
+    gap: 18px;
+    padding: 18px;
+}
+
+.panel {
+    background: #ffffff;
+    border: 1px solid #d9e0ea;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(30, 42, 62, 0.06);
+}
+
+.input-panel {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 36px);
+    padding: 18px;
+}
+
+.toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+h1 {
+    margin: 0;
+    font-size: 20px;
+    line-height: 1.2;
+}
+
+button {
+    border: 0;
+    border-radius: 6px;
+    padding: 10px 14px;
+    background: #2563eb;
+    color: #ffffff;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+button:disabled {
+    background: #9aa8bd;
+    cursor: wait;
+}
+
+textarea {
+    width: 100%;
+    flex: 1;
+    min-height: 360px;
+    margin-top: 18px;
+    padding: 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    resize: none;
+    font: 15px/1.5 "Segoe UI", Arial, sans-serif;
+}
+
+.status {
+    min-height: 22px;
+    margin: 14px 0 0;
+    color: #526174;
+    font-size: 14px;
+}
+
+.workspace {
+    display: grid;
+    grid-template-rows: minmax(360px, 1.2fr) auto minmax(220px, 0.7fr);
+    gap: 18px;
+}
+
+.section-title {
+    padding: 12px 14px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #334155;
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.diagram-panel {
+    overflow: hidden;
+}
+
+#diagram {
+    width: 100%;
+    height: 100%;
+    min-height: 320px;
+    display: block;
+    background: #fbfdff;
+}
+
+.entities {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    padding: 14px;
+}
+
+.entity {
+    border: 1px solid #d9e0ea;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #ffffff;
+}
+
+.entity-name {
+    padding: 10px 12px;
+    background: #eef6ff;
+    color: #0f3f75;
+    font-weight: 800;
+}
+
+.attribute {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 12px;
+    border-top: 1px solid #eef2f7;
+    font-size: 14px;
+}
+
+.attribute span:last-child {
+    color: #64748b;
+    white-space: nowrap;
+}
+
+.sql-panel {
+    overflow: hidden;
+}
+
+pre {
+    margin: 0;
+    min-height: 180px;
+    overflow: auto;
+    padding: 14px;
+    background: #0f172a;
+    color: #dbeafe;
+    font: 13px/1.55 Consolas, "Liberation Mono", monospace;
+}
+
+@media (max-width: 900px) {
+    .layout {
+        grid-template-columns: 1fr;
+    }
+
+    .input-panel {
+        min-height: 460px;
+    }
+}

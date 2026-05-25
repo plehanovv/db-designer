@@ -6,14 +6,16 @@ type Entity struct {
 }
 
 type Attribute struct {
-	Name string `json:"name"`
-	Type string `json:"type"`
+	Name     string `json:"name"`
+	Type     string `json:"type"`
+	Required bool   `json:"required"`
 }
 
 type Relation struct {
-	From string `json:"from"`
-	To   string `json:"to"`
-	Type string `json:"type"`
+	From        string `json:"from"`
+	To          string `json:"to"`
+	Type        string `json:"type"`
+	Cardinality string `json:"cardinality"`
 }
 
 type AnalyzeResponse struct {
