@@ -9,11 +9,13 @@ import (
 )
 
 func GenerateSQL(
+	database model.Database,
 	entities []model.Entity,
 	relations []model.Relation,
 ) string {
 
 	var builder strings.Builder
+	writeDatabaseDDL(&builder, database)
 
 	for _, entity := range entities {
 		tableName := toSQLName(entity.Name)
@@ -33,40 +35,172 @@ func GenerateSQL(
 					",\n    %s %s%s",
 					toSQLName(attr.Name),
 					attr.Type,
-					requiredSQL(attr.Required),
+					attributeConstraintsSQL(attr),
 				),
 			)
 		}
 
-		for _, relation := range relations {
-			if relation.From == entity.Name {
-				columnName := toSQLName(relation.To) + "_id"
-				targetTableName := toSQLName(relation.To)
-
-				builder.WriteString(
-					fmt.Sprintf(
-						",\n    %s INTEGER,\n    CONSTRAINT fk_%s_%s FOREIGN KEY (%s) REFERENCES %s(id)",
-						columnName,
-						tableName,
-						targetTableName,
-						columnName,
-						targetTableName,
-					),
-				)
-			}
+		for _, foreignKey := range foreignKeysForEntity(entity, relations) {
+			builder.WriteString(
+				fmt.Sprintf(
+					",\n    %s INTEGER,\n    CONSTRAINT fk_%s_%s FOREIGN KEY (%s) REFERENCES %s(id)",
+					foreignKey.columnName,
+					tableName,
+					foreignKey.targetTableName,
+					foreignKey.columnName,
+					foreignKey.targetTableName,
+				),
+			)
 		}
 
 		builder.WriteString("\n);\n\n")
 	}
 
+	for _, relation := range relations {
+		if relation.Cardinality != "many-to-many" {
+			continue
+		}
+
+		fromTableName := toSQLName(relation.From)
+		toTableName := toSQLName(relation.To)
+		junctionTableName := fromTableName + "_" + toTableName
+
+		builder.WriteString(
+			fmt.Sprintf(
+				"CREATE TABLE %s (\n    %s_id INTEGER NOT NULL,\n    %s_id INTEGER NOT NULL,\n    CONSTRAINT pk_%s PRIMARY KEY (%s_id, %s_id),\n    CONSTRAINT fk_%s_%s FOREIGN KEY (%s_id) REFERENCES %s(id),\n    CONSTRAINT fk_%s_%s FOREIGN KEY (%s_id) REFERENCES %s(id)\n);\n\n",
+				junctionTableName,
+				fromTableName,
+				toTableName,
+				junctionTableName,
+				fromTableName,
+				toTableName,
+				junctionTableName,
+				fromTableName,
+				fromTableName,
+				fromTableName,
+				junctionTableName,
+				toTableName,
+				toTableName,
+				toTableName,
+			),
+		)
+	}
+
+	for _, statement := range indexStatements(entities, relations) {
+		builder.WriteString(statement)
+		builder.WriteString("\n")
+	}
+
 	return builder.String()
 }
 
-func requiredSQL(required bool) string {
-	if required {
-		return " NOT NULL"
+func writeDatabaseDDL(builder *strings.Builder, database model.Database) {
+	name := strings.TrimSpace(database.Name)
+	if name == "" {
+		return
 	}
-	return ""
+
+	databaseName := toSQLName(name)
+	builder.WriteString(fmt.Sprintf("CREATE DATABASE %s;\n\n", databaseName))
+	builder.WriteString(fmt.Sprintf("-- Connect to %s before running the statements below.\n\n", databaseName))
+}
+
+type foreignKey struct {
+	columnName      string
+	targetTableName string
+}
+
+func foreignKeysForEntity(entity model.Entity, relations []model.Relation) []foreignKey {
+	var result []foreignKey
+	seen := make(map[string]bool)
+
+	for _, relation := range relations {
+		holder, target, ok := foreignKeyPlacement(relation)
+		if !ok || holder != entity.Name {
+			continue
+		}
+
+		key := toSQLName(target) + "_id"
+		if seen[key] {
+			continue
+		}
+
+		result = append(result, foreignKey{
+			columnName:      key,
+			targetTableName: toSQLName(target),
+		})
+		seen[key] = true
+	}
+
+	return result
+}
+
+func foreignKeyPlacement(relation model.Relation) (holder string, target string, ok bool) {
+	switch relation.Cardinality {
+	case "one-to-many":
+		return relation.To, relation.From, true
+	case "many-to-one":
+		return relation.From, relation.To, true
+	case "one-to-one", "unspecified", "":
+		return relation.From, relation.To, true
+	case "many-to-many":
+		return "", "", false
+	default:
+		return relation.From, relation.To, true
+	}
+}
+
+func attributeConstraintsSQL(attribute model.Attribute) string {
+	var constraints []string
+	if attribute.Required {
+		constraints = append(constraints, "NOT NULL")
+	}
+	if attribute.Unique {
+		constraints = append(constraints, "UNIQUE")
+	}
+	if len(constraints) == 0 {
+		return ""
+	}
+	return " " + strings.Join(constraints, " ")
+}
+
+func indexStatements(entities []model.Entity, relations []model.Relation) []string {
+	var statements []string
+	seen := make(map[string]bool)
+
+	for _, entity := range entities {
+		tableName := toSQLName(entity.Name)
+		for _, foreignKey := range foreignKeysForEntity(entity, relations) {
+			indexName := "idx_" + tableName + "_" + foreignKey.columnName
+			key := indexName + ":" + tableName + ":" + foreignKey.columnName
+			if seen[key] {
+				continue
+			}
+
+			statements = append(statements, fmt.Sprintf("CREATE INDEX %s ON %s(%s);\n", indexName, tableName, foreignKey.columnName))
+			seen[key] = true
+		}
+	}
+
+	for _, relation := range relations {
+		if relation.Cardinality != "many-to-many" {
+			continue
+		}
+
+		fromTableName := toSQLName(relation.From)
+		toTableName := toSQLName(relation.To)
+		junctionTableName := fromTableName + "_" + toTableName
+		indexName := "idx_" + junctionTableName + "_" + toTableName + "_id"
+		key := indexName + ":" + junctionTableName
+		if seen[key] {
+			continue
+		}
+
+		statements = append(statements, fmt.Sprintf("CREATE INDEX %s ON %s(%s_id);\n", indexName, junctionTableName, toTableName))
+		seen[key] = true
+	}
+
+	return statements
 }
 
 func toSQLName(value string) string {
@@ -104,11 +238,11 @@ var reservedSQLNames = map[string]bool{
 
 func transliterate(value string) string {
 	replacer := strings.NewReplacer(
-		"\u0430", "a", "\u0431", "b", "\u0432", "v", "\u0433", "g", "\u0434", "d", "\u0435", "e", "\u0451", "e",
-		"\u0436", "zh", "\u0437", "z", "\u0438", "i", "\u0439", "y", "\u043a", "k", "\u043b", "l", "\u043c", "m",
-		"\u043d", "n", "\u043e", "o", "\u043f", "p", "\u0440", "r", "\u0441", "s", "\u0442", "t", "\u0443", "u",
-		"\u0444", "f", "\u0445", "h", "\u0446", "c", "\u0447", "ch", "\u0448", "sh", "\u0449", "sch",
-		"\u044a", "", "\u044b", "y", "\u044c", "", "\u044d", "e", "\u044e", "yu", "\u044f", "ya",
+		"а", "a", "б", "b", "в", "v", "г", "g", "д", "d", "е", "e", "ё", "e",
+		"ж", "zh", "з", "z", "и", "i", "й", "y", "к", "k", "л", "l", "м", "m",
+		"н", "n", "о", "o", "п", "p", "р", "r", "с", "s", "т", "t", "у", "u",
+		"ф", "f", "х", "h", "ц", "c", "ч", "ch", "ш", "sh", "щ", "sch",
+		"ъ", "", "ы", "y", "ь", "", "э", "e", "ю", "yu", "я", "ya",
 	)
 
 	return replacer.Replace(value)

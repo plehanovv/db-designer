@@ -1,0 +1,11 @@
+.gocache/
+server-*.log
+*.log
+.idea/
+*.exe
+*.test
+*.out
+*.tmp
+__pycache__/
+.venv/
+*.bak

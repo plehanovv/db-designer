@@ -1,0 +1,69 @@
+{
+  "database": {
+    "name": "LibraryDemo"
+  },
+  "entities": [
+    {
+      "name": "Reader",
+      "attributes": [
+        {"name": "name", "type": "VARCHAR(255)", "required": true},
+        {"name": "email", "type": "VARCHAR(255)", "required": true, "unique": true},
+        {"name": "phone", "type": "VARCHAR(20)"}
+      ]
+    },
+    {
+      "name": "Author",
+      "attributes": [
+        {"name": "name", "type": "VARCHAR(255)", "required": true},
+        {"name": "country", "type": "VARCHAR(255)"}
+      ]
+    },
+    {
+      "name": "Book",
+      "attributes": [
+        {"name": "title", "type": "VARCHAR(255)", "required": true},
+        {"name": "year", "type": "INTEGER"},
+        {"name": "isbn", "type": "VARCHAR(255)", "unique": true}
+      ]
+    },
+    {
+      "name": "Category",
+      "attributes": [
+        {"name": "title", "type": "VARCHAR(255)", "required": true},
+        {"name": "code", "type": "VARCHAR(255)", "unique": true}
+      ]
+    },
+    {
+      "name": "Loan",
+      "attributes": [
+        {"name": "issue_date", "type": "DATE"},
+        {"name": "return_date", "type": "DATE"},
+        {"name": "status", "type": "VARCHAR(255)"}
+      ]
+    },
+    {
+      "name": "Reservation",
+      "attributes": [
+        {"name": "date", "type": "DATE"},
+        {"name": "status", "type": "VARCHAR(255)"}
+      ]
+    },
+    {
+      "name": "Fine",
+      "attributes": [
+        {"name": "amount", "type": "NUMERIC(12,2)"},
+        {"name": "date", "type": "DATE"},
+        {"name": "status", "type": "VARCHAR(255)"}
+      ]
+    }
+  ],
+  "relations": [
+    {"from": "Author", "to": "Book", "type": "has", "cardinality": "one-to-many"},
+    {"from": "Category", "to": "Book", "type": "contains", "cardinality": "one-to-many"},
+    {"from": "Reader", "to": "Loan", "type": "has", "cardinality": "one-to-many"},
+    {"from": "Loan", "to": "Book", "type": "associated_with", "cardinality": "many-to-one"},
+    {"from": "Reader", "to": "Book", "type": "has", "cardinality": "one-to-many"},
+    {"from": "Reservation", "to": "Book", "type": "associated_with", "cardinality": "many-to-one"},
+    {"from": "Loan", "to": "Fine", "type": "contains", "cardinality": "one-to-many"}
+  ]
+}

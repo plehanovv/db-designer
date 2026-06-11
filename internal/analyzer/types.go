@@ -1,26 +1,41 @@
 package analyzer
 
+import "strings"
+
 func detectAttributeType(attribute string) string {
 	attribute = normalizeAttribute(attribute)
+	if strings.HasPrefix(attribute, "дата_") {
+		return "DATE"
+	}
 
 	switch attribute {
 
-	case "age", "\u0432\u043e\u0437\u0440\u0430\u0441\u0442", "\u043a\u043e\u043b\u0438\u0447\u0435\u0441\u0442\u0432\u043e", "\u043d\u043e\u043c\u0435\u0440":
+	case "age", "year", "floor", "quantity", "count", "stock", "duration", "rating", "score", "capacity", "seats", "places", "attempt", "priority",
+		"возраст", "год", "этаж", "количество", "номер",
+		"остаток", "длительность", "рейтинг", "балл", "оценка", "место", "приоритет", "гарантия":
 		return "INTEGER"
 
-	case "price", "cost", "amount", "\u0446\u0435\u043d\u0430", "\u0441\u0442\u043e\u0438\u043c\u043e\u0441\u0442\u044c", "\u0441\u0443\u043c\u043c\u0430":
+	case "price", "cost", "amount", "discount", "salary", "budget", "balance", "tax", "total", "weight", "volume", "rate", "fee", "payment",
+		"скидка", "цена", "стоимость", "сумма",
+		"зарплата", "оклад", "бюджет", "баланс", "налог", "итог", "вес", "объем", "площадь", "тариф", "комиссия", "платеж", "премия", "выплата":
 		return "NUMERIC(12,2)"
 
-	case "date", "created", "updated", "\u0434\u0430\u0442\u0430":
+	case "date", "created", "updated", "deadline", "birthdate", "дата", "дедлайн", "срок":
 		return "DATE"
 
-	case "email", "\u043f\u043e\u0447\u0442\u0430":
+	case "time", "start_time", "end_time", "время":
+		return "TIME"
+
+	case "email", "почта":
 		return "VARCHAR(255)"
 
-	case "phone", "\u0442\u0435\u043b\u0435\u0444\u043e\u043d":
+	case "phone", "телефон":
 		return "VARCHAR(20)"
 
-	case "name", "title", "login", "\u0438\u043c\u044f", "\u043d\u0430\u0437\u0432\u0430\u043d\u0438\u0435", "\u043b\u043e\u0433\u0438\u043d":
+	case "name", "title", "login", "code", "author", "group", "position", "role", "status", "model", "brand", "passport", "vin",
+		"address", "city", "country", "region", "street", "category", "type", "kind", "level", "description", "comment", "note", "url", "slug",
+		"автор", "группа", "должность", "имя", "код", "марка", "модель", "название", "логин", "паспорт", "роль", "статус", "тема", "госномер", "специальность",
+		"адрес", "город", "страна", "регион", "улица", "категория", "тип", "уровень", "комментарий", "примечание", "ссылка", "класс", "кабинет", "маршрут", "дозировка", "жанр", "серия":
 		return "VARCHAR(255)"
 
 	default:

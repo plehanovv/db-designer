@@ -1,0 +1,184 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1040" viewBox="0 0 1600 1040">
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#222"/>
+    </marker>
+    <marker id="arrow-dashed" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#667085"/>
+    </marker>
+    <style>
+      .title { font: 700 22px "Times New Roman", serif; fill: #111827; }
+      .h1 { font: 700 15px "Times New Roman", serif; fill: #111827; }
+      .h2 { font: 700 13px "Times New Roman", serif; fill: #111827; }
+      .txt { font: 12px "Times New Roman", serif; fill: #111827; }
+      .small { font: 11px "Times New Roman", serif; fill: #374151; }
+      .tiny { font: 10px "Times New Roman", serif; fill: #374151; }
+      .italic { font: italic 11px "Times New Roman", serif; fill: #4b5563; }
+      .box { fill: #fff; stroke: #6b7280; stroke-width: 1.2; }
+      .client { fill: #eef3fb; stroke: #495176; stroke-width: 1.5; }
+      .backend { fill: #fff7ed; stroke: #b5825b; stroke-width: 1.5; }
+      .layer { fill: #fff0cf; stroke: #bd8a51; stroke-width: 1.1; }
+      .layer2 { fill: #fff6dc; stroke: #bd8a51; stroke-width: 1.1; }
+      .external { fill: #eef8ef; stroke: #5f8066; stroke-width: 1.5; }
+      .storage { fill: #eef8ef; stroke: #5f8066; stroke-width: 1.5; }
+      .artifact { fill: #eef6ff; stroke: #6d87ad; stroke-width: 1.2; }
+      .tagClient { fill: #4a4a70; }
+      .tagBackend { fill: #a87958; }
+      .tagExternal { fill: #5f8066; }
+      .tagStorage { fill: #5f8066; }
+      .tagArtifact { fill: #536f9a; }
+      .tagText { font: 700 13px "Times New Roman", serif; fill: #fff; }
+      .arrow { stroke: #222; stroke-width: 1.6; fill: none; marker-end: url(#arrow); }
+      .dash { stroke: #667085; stroke-width: 1.4; stroke-dasharray: 7 5; fill: none; marker-end: url(#arrow-dashed); }
+      .thin { stroke: #222; stroke-width: 1.1; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="1600" height="1040" fill="#ffffff"/>
+  <text x="800" y="38" text-anchor="middle" class="title">Архитектурная схема программной реализации подсистемы</text>
+
+  <!-- Legend -->
+  <rect x="48" y="74" width="218" height="116" rx="5" class="box"/>
+  <text x="65" y="97" class="h2">Условные обозначения</text>
+  <line x1="65" y1="119" x2="130" y2="119" class="arrow"/>
+  <text x="142" y="123" class="small">HTTP / REST / JSON</text>
+  <line x1="65" y1="143" x2="130" y2="143" class="dash"/>
+  <text x="142" y="147" class="small">опциональное обращение</text>
+  <rect x="65" y="162" width="18" height="14" fill="#fff0cf" stroke="#bd8a51"/>
+  <text x="94" y="173" class="small">прикладной слой</text>
+
+  <!-- Client -->
+  <rect x="310" y="72" width="890" height="250" rx="4" class="client"/>
+  <rect x="310" y="72" width="118" height="24" class="tagClient"/>
+  <text x="324" y="89" class="tagText">Клиент</text>
+
+  <!-- User icon -->
+  <circle cx="815" cy="124" r="15" fill="none" stroke="#111827" stroke-width="2.4"/>
+  <path d="M785 178 C789 150 842 150 846 178" fill="none" stroke="#111827" stroke-width="2.4"/>
+  <text x="815" y="205" text-anchor="middle" class="h2">Пользователь</text>
+  <text x="815" y="222" text-anchor="middle" class="small">инженер-проектировщик / разработчик БД</text>
+
+  <!-- Browser icon -->
+  <rect x="428" y="145" width="80" height="74" rx="3" fill="#fff" stroke="#111827" stroke-width="2"/>
+  <line x1="428" y1="166" x2="508" y2="166" stroke="#111827" stroke-width="2"/>
+  <circle cx="438" cy="156" r="2" fill="#111827"/>
+  <circle cx="448" cy="156" r="2" fill="#111827"/>
+  <circle cx="458" cy="156" r="2" fill="#111827"/>
+  <text x="468" y="248" text-anchor="middle" class="h2">Веб-интерфейс</text>
+  <text x="468" y="265" text-anchor="middle" class="small">HTML / CSS / JavaScript</text>
+  <text x="468" y="282" text-anchor="middle" class="small">ввод текста, загрузка TXT / JSON / CSV</text>
+
+  <!-- UI artifacts -->
+  <rect x="635" y="248" width="364" height="28" fill="#fff" stroke="#c7ccd5"/>
+  <text x="817" y="267" text-anchor="middle" class="small">POST /analyze, POST /generate-sql</text>
+
+  <!-- Manual editing/export -->
+  <rect x="935" y="142" width="110" height="88" rx="4" fill="#fff" stroke="#111827" stroke-width="1.6"/>
+  <line x1="952" y1="164" x2="1028" y2="164" stroke="#111827" stroke-width="1"/>
+  <line x1="952" y1="186" x2="1028" y2="186" stroke="#111827" stroke-width="1"/>
+  <line x1="952" y1="208" x2="1005" y2="208" stroke="#111827" stroke-width="1"/>
+  <text x="990" y="248" text-anchor="middle" class="h2">Результат в UI</text>
+  <text x="990" y="265" text-anchor="middle" class="small">ER-модель, SQL, оценка</text>
+  <text x="990" y="282" text-anchor="middle" class="small">ручная правка и экспорт</text>
+
+  <!-- Client arrows -->
+  <path d="M508 190 L617 190 L617 262 L635 262" class="thin"/>
+  <path d="M999 248 L999 262 L999 262" class="thin"/>
+
+  <!-- Backend -->
+  <rect x="430" y="390" width="720" height="440" rx="5" class="backend"/>
+  <rect x="430" y="390" width="300" height="24" class="tagBackend"/>
+  <text x="444" y="407" class="tagText">Бэкенд-приложение: Go</text>
+
+  <!-- Backend layers -->
+  <rect x="450" y="430" width="660" height="78" rx="4" class="layer"/>
+  <text x="468" y="456" class="h2">cmd/server и internal/handler — HTTP-слой</text>
+  <text x="468" y="476" class="small">раздача статических файлов web/, обработчики /analyze и /generate-sql</text>
+  <text x="468" y="493" class="italic">принимает JSON-запросы от интерфейса и возвращает модель, SQL, диагностику</text>
+
+  <rect x="450" y="530" width="660" height="78" rx="4" class="layer2"/>
+  <text x="468" y="556" class="h2">internal/service — координация pipeline</text>
+  <text x="468" y="576" class="small">определение типа входа, запуск анализа, валидация, сбор результата</text>
+  <text x="468" y="593" class="italic">единая проектная процедура от исходного описания до артефактов</text>
+
+  <rect x="450" y="630" width="660" height="84" rx="4" class="layer"/>
+  <text x="468" y="656" class="h2">internal/analyzer и internal/nlp — семантическое ядро</text>
+  <text x="468" y="676" class="small">нормализация текста, сущности, атрибуты, связи, кардинальность, объяснение правил</text>
+  <text x="468" y="693" class="italic">использует spaCy-разметку либо локальные правила при недоступности NLP-сервиса</text>
+
+  <rect x="450" y="736" width="660" height="74" rx="4" class="layer2"/>
+  <text x="468" y="762" class="h2">internal/generator и internal/storage — генерация и сохранение</text>
+  <text x="468" y="782" class="small">SQL DDL, проверка SQL, шаги преобразования, запись результата в PostgreSQL</text>
+  <text x="468" y="799" class="italic">формирует итоговые артефакты проектирования структуры базы данных</text>
+
+  <!-- Backend internal arrows -->
+  <path d="M1126 508 L1126 526" class="thin"/>
+  <path d="M1126 608 L1126 626" class="thin"/>
+  <path d="M1126 714 L1126 732" class="thin"/>
+
+  <!-- Request arrow to backend -->
+  <path d="M817 276 L817 388" class="arrow"/>
+  <rect x="682" y="344" width="270" height="28" fill="#fff" stroke="#c7ccd5"/>
+  <text x="817" y="363" text-anchor="middle" class="small">REST API: JSON-запрос проектирования</text>
+
+  <!-- NLP service -->
+  <rect x="1220" y="408" width="300" height="255" rx="5" class="external"/>
+  <rect x="1220" y="408" width="198" height="24" class="tagExternal"/>
+  <text x="1234" y="425" class="tagText">NLP-сервис</text>
+
+  <rect x="1242" y="456" width="238" height="158" rx="4" fill="#fff" stroke="#b9c4bd"/>
+  <text x="1361" y="486" text-anchor="middle" class="h2">Python + FastAPI + spaCy</text>
+  <text x="1262" y="520" class="small">• токенизация текста</text>
+  <text x="1262" y="540" class="small">• лемматизация</text>
+  <text x="1262" y="560" class="small">• части речи и зависимости</text>
+  <text x="1262" y="580" class="small">• модели ru_core_news_sm / en_core_web_sm</text>
+  <text x="1262" y="600" class="italic">возвращает разметку для Go-сервиса</text>
+
+  <path d="M1110 670 L1218 538" class="dash"/>
+  <rect x="1128" y="592" width="122" height="28" fill="#fff" stroke="#c7ccd5"/>
+  <text x="1189" y="611" text-anchor="middle" class="small">POST /analyze</text>
+
+  <!-- Storage -->
+  <rect x="96" y="820" width="340" height="145" rx="5" class="storage"/>
+  <rect x="96" y="820" width="225" height="24" class="tagStorage"/>
+  <text x="110" y="837" class="tagText">Хранение результатов</text>
+
+  <!-- Database icon -->
+  <ellipse cx="175" cy="874" rx="42" ry="14" fill="#fff" stroke="#111827" stroke-width="1.6"/>
+  <path d="M133 874 L133 930 C133 938 217 938 217 930 L217 874" fill="#fff" stroke="#111827" stroke-width="1.6"/>
+  <ellipse cx="175" cy="930" rx="42" ry="14" fill="#fff" stroke="#111827" stroke-width="1.6"/>
+  <text x="175" y="962" text-anchor="middle" class="h2">PostgreSQL 17/18</text>
+  <text x="175" y="979" text-anchor="middle" class="small">описания, модели, SQL, диагностика</text>
+
+  <!-- Storage connection -->
+  <path d="M450 776 L260 776 L260 818" class="arrow"/>
+  <rect x="250" y="752" width="160" height="28" fill="#fff" stroke="#c7ccd5"/>
+  <text x="330" y="771" text-anchor="middle" class="small">storage.SaveAnalysis</text>
+
+  <!-- Artifacts -->
+  <rect x="615" y="900" width="520" height="98" rx="5" class="artifact"/>
+  <rect x="615" y="900" width="215" height="24" class="tagArtifact"/>
+  <text x="629" y="917" class="tagText">Выходные артефакты</text>
+  <text x="642" y="948" class="h2">Результаты проектирования</text>
+  <text x="642" y="970" class="small">SQL DDL, JSON-модель, Mermaid ER-диаграмма, отчёт анализа</text>
+  <text x="642" y="987" class="italic">доступны для просмотра, экспорта и последующей демонстрации</text>
+
+  <path d="M780 810 L780 898" class="arrow"/>
+  <rect x="665" y="850" width="230" height="28" fill="#fff" stroke="#c7ccd5"/>
+  <text x="780" y="869" text-anchor="middle" class="small">генерация результата</text>
+
+  <!-- Return to UI -->
+  <path d="M1150 525 L1200 525 L1200 310 L1045 310 L1045 268" class="dash"/>
+  <rect x="1090" y="294" width="195" height="28" fill="#fff" stroke="#c7ccd5"/>
+  <text x="1188" y="313" text-anchor="middle" class="small">модель + SQL + диагностика</text>
+
+  <!-- Pipeline note -->
+  <rect x="1242" y="700" width="238" height="128" rx="4" fill="#fff" stroke="#b9c4bd"/>
+  <text x="1361" y="728" text-anchor="middle" class="h2">Pipeline проектирования</text>
+  <text x="1262" y="758" class="small">1. ввод / загрузка описания</text>
+  <text x="1262" y="778" class="small">2. NLP или структурированный парсинг</text>
+  <text x="1262" y="798" class="small">3. сущности, атрибуты, связи</text>
+  <text x="1262" y="818" class="small">4. валидация и SQL DDL</text>
+
+  <path d="M1110 574 L1240 754" class="dash"/>
+</svg>

@@ -10,26 +10,96 @@
 <main class="layout">
     <section class="panel input-panel">
         <div class="toolbar">
-            <h1>Database Structure Designer</h1>
-            <button id="analyzeButton" type="button">Analyze</button>
+            <div class="brand-title">
+                <span class="brand-badge">DB CAD</span>
+                <h1>Проектирование структуры БД</h1>
+            </div>
+            <button id="analyzeButton" type="button">Анализ</button>
         </div>
-        <textarea id="domainText" spellcheck="true">Customer has name email phone. Order has number date amount. Order belongs customer.</textarea>
-        <p id="status" class="status">Enter a domain description in Russian or English.</p>
+        <div class="examples" aria-label="Примеры описаний предметной области">
+            <button class="example-button" type="button" data-example="library">Библиотека</button>
+            <button class="example-button" type="button" data-example="university">Учебный процесс</button>
+            <button class="example-button" type="button" data-example="control">Контрольный пример</button>
+            <button id="uploadFileButton" class="secondary-button" type="button">Загрузить файл</button>
+            <input id="sourceFile" class="visually-hidden" type="file" accept=".txt,.json,.csv,text/plain,application/json,text/csv">
+        </div>
+        <label class="database-field">
+            <span>База данных</span>
+            <input id="databaseName" type="text" value="LibraryDemo">
+        </label>
+        <textarea id="domainText" spellcheck="true">Читатель имеет имя email телефон.
+Автор имеет имя страну.
+Книга имеет название год isbn.
+Категория имеет название код.
+Выдача имеет дату выдачи дату возврата статус.
+Бронирование имеет дату статус.
+Штраф имеет сумму дату статус.
+Автор пишет книги.
+Категория включает книги.
+Читатель имеет несколько выдач.
+Выдача связана с книгой.
+Читатель бронирует книги.
+Бронирование связано с книгой.
+Выдача содержит штрафы.</textarea>
+        <p id="status" class="status">Введите описание предметной области на русском или английском языке.</p>
     </section>
 
     <section class="workspace">
         <section class="panel diagram-panel">
-            <div class="section-title">ER model</div>
-            <svg id="diagram" role="img" aria-label="ER diagram"></svg>
+            <div class="section-title split-title">
+                <span>ER-модель</span>
+                <div class="title-actions diagram-actions">
+                    <button id="diagramZoomOutButton" class="icon-button" type="button" title="Уменьшить">-</button>
+                    <button id="diagramZoomResetButton" class="secondary-button" type="button">100%</button>
+                    <button id="diagramZoomInButton" class="icon-button" type="button" title="Увеличить">+</button>
+                    <button id="diagramFitButton" class="secondary-button" type="button">Вписать</button>
+                </div>
+            </div>
+            <div id="diagramViewport" class="diagram-viewport">
+                <svg id="diagram" role="img" aria-label="ER-диаграмма"></svg>
+            </div>
         </section>
 
-        <section class="panel">
-            <div class="section-title">Entities and relations</div>
+        <section class="panel model-panel">
+            <div class="section-title split-title">
+                <span>Сущности и связи</span>
+                <div class="title-actions">
+                    <button id="addEntityButton" class="secondary-button" type="button">+ Сущность</button>
+                    <button id="addRelationButton" class="icon-button" type="button" title="Добавить связь">+</button>
+                    <button id="regenerateButton" class="secondary-button" type="button">Пересобрать SQL</button>
+                </div>
+            </div>
             <div id="entities" class="entities"></div>
+            <div id="relations" class="relations"></div>
+        </section>
+
+        <section class="panel trace-panel">
+            <div class="section-title">Ход анализа</div>
+            <div id="diagnostics" class="diagnostics"></div>
+            <div id="trace" class="trace"></div>
+        </section>
+
+        <section class="panel transform-panel">
+            <div class="section-title">Преобразование модели</div>
+            <div id="transformations" class="transformations"></div>
+        </section>
+
+        <section class="panel evaluation-panel">
+            <div class="section-title">Оценка результата</div>
+            <div id="evaluation" class="evaluation"></div>
         </section>
 
         <section class="panel sql-panel">
-            <div class="section-title">SQL DDL</div>
+            <div class="section-title">
+                <span>SQL DDL</span>
+            </div>
+            <div class="export-bar" aria-label="Экспорт результатов проектирования">
+                <span class="export-label">Экспорт результата</span>
+                <button id="downloadSQLButton" class="export-button export-sql" type="button"><span>DDL</span><strong>SQL</strong></button>
+                <button id="downloadJSONButton" class="export-button export-json" type="button"><span>Модель</span><strong>JSON</strong></button>
+                <button id="downloadMermaidButton" class="export-button export-mermaid" type="button"><span>Диаграмма</span><strong>Mermaid</strong></button>
+                <button id="downloadReportButton" class="export-button export-report" type="button"><span>Полный</span><strong>Отчет</strong></button>
+            </div>
             <pre id="sql"></pre>
         </section>
     </section>
